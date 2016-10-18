@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f070FB"
+    tools:context="com.pkb149.riddlemania.LoginActivity"
+    >
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/facebookLogin"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp"
+        android:src="@drawable/facebook"
+        android:scaleType="centerInside"
+        android:layout_marginLeft="20dp" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/googlePlusLogin"
+        android:src="@drawable/googleplus"
+        android:scaleType="centerInside"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/facebookLogin"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/emailLogin"
+        android:src="@drawable/email"
+        android:scaleType="centerInside"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/googlePlusLogin"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true"
+        android:background="#AA00FF"
+        android:id="@+id/signup"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/abc_search_view_preferred_height"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
+</RelativeLayout>
