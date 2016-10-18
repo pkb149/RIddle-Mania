@@ -60,8 +60,8 @@ public class loggedInDashboard extends Activity {
             {
                 // fetch time from local device
                 Date currenttime= new Date();
-                //Long timeOld= sharedPref.getLong("time",-1);
-                long totalTime = (currenttime.getTime() - 10000)/1000;// 10000 instead of timeOld
+                Long timeOld= sharedPref.getLong("time",-1);
+                long totalTime = (currenttime.getTime() - timeOld)/1000;// 10000 instead of timeOld
                 if(totalTime>3600){
                     //
                     //check server time difference
@@ -71,12 +71,10 @@ public class loggedInDashboard extends Activity {
                     editor.putInt("energy",energy);
                     editor.commit();
                     //update remote db as well
-                    energyTextView.setText(Integer.toString(energy));
-                }
+                    }
+
             }
-            else {
-                energyTextView.setText(Integer.toString(energy));
-            }
+
         }
         else {
             energy=60;
@@ -84,19 +82,20 @@ public class loggedInDashboard extends Activity {
             editor.putLong("time",currenttime.getTime());
             editor.putInt("energy",energy);
             editor.commit();
-            energyTextView.setText(Integer.toString(energy));
+
             //update remote db as well
         }
+        energyTextView.setText(Integer.toString(energy));
         button2= (Button)findViewById(R.id.gamePlay);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    //updateEnergyGamePlay();
-                energy=energy-15;
-                editor.putInt("energy",energy);
-                editor.commit();
-
-                energyTextView.setText(Integer.toString(energy));
+                if(energy>14) {
+                    energy = energy - 15;
+                    editor.putInt("energy", energy);
+                    editor.commit();
+                    energyTextView.setText(Integer.toString(energy));
+                }
             }
         });
 
