@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class loggedInDashboard extends Activity {
     private int energy;
-    SharedPreferences sharedPref = loggedInDashboard.this.getPreferences(Context.MODE_PRIVATE);
+    SharedPreferences sharedPref = getSharedPreferences("myData",Context.MODE_PRIVATE);
     SharedPreferences.Editor editor= sharedPref.edit();
     private Button button1;
     private Button button2;
@@ -34,7 +34,8 @@ public class loggedInDashboard extends Activity {
             }
         });
 
-        AsyncTaskRunner runner = new AsyncTaskRunner();
+        //AsyncTaskRunner runner = new AsyncTaskRunner();
+        //runner.execute("","","");
         energy = sharedPref.getInt("energy", -1);// id will be -1 if energy key is not present
         if(energy !=-1) {
             // energy key is already present, so we have got real energy value
@@ -43,15 +44,14 @@ public class loggedInDashboard extends Activity {
             {
                 // fetch time from local device
                 Date currenttime= new Date();
-                //long millis = date.getTime();
-                Long timeOld= sharedPref.getLong("time",-1);
-                long totalTime = (currenttime.getTime() - timeOld)/1000;
+                //Long timeOld= sharedPref.getLong("time",-1);
+                long totalTime = (currenttime.getTime() - 10000)/1000;// 10000 instead of timeOld
                 if(totalTime>3600){
                     //
                     //check server time difference
                     //if true
                     energy=energy+15;
-                    editor.putLong("time",currenttime.getTime());
+                    editor.putLong("time",currenttime.getTime());// gettime converts time into millis
                     editor.putInt("energy",energy);
                     editor.commit();
                     //update remote db as well
