@@ -41,7 +41,7 @@ public class loggedInDashboard extends Activity {
     //SharedPreferences sharedPref = PreferenceManager
     //        .getDefaultSharedPreferences(this);// try another context once
     //SharedPreferences.Editor editor = sharedPref.edit();
-
+    private Button refreshButton;
     private Button button1;
     private Button button2;
     @Override
@@ -58,6 +58,7 @@ public class loggedInDashboard extends Activity {
         sharedPref= this.getSharedPreferences("myData", Context.MODE_PRIVATE);
         editor= sharedPref.edit();
         test=(TextView) findViewById(R.id.test);
+        refreshButton=(Button) findViewById(R.id.refresh);
         //String s=ref.child("users").child("pkb149hotmailcom").child("energy").toString();
         //test.setText(s);
         //Map a= ServerValue.TIMESTAMP;
@@ -294,17 +295,45 @@ public class loggedInDashboard extends Activity {
             @Override
             public void onClick(View view) {
                 if(energy>14) {
-                    energy = energy - 15;
-                    ref.child("users").child(UID).child("energy").setValue(energy);
-                    ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
-                    editor.putInt("energy", energy);
-                    editor.apply();
-                    energyTextView.setText(String.valueOf(energy));
+                    if(energy==60){
+                        energy = energy - 15;
+                        ref.child("users").child(UID).child("energy").setValue(energy);
+                        ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
+                        editor.putInt("energy", energy);
+                        editor.apply();
+                        energyTextView.setText(String.valueOf(energy));
+                    }else{
+                        energy = energy - 15;
+                        ref.child("users").child(UID).child("energy").setValue(energy);
+                        editor.putInt("energy", energy);
+                        editor.apply();
+                        energyTextView.setText(String.valueOf(energy));
+                    }
+
 
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"energy is "+energy, Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ref.child("users").child(UID).child("energy").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final Object value= dataSnapshot.getValue(Object.class);
+                        energy=(int)(long)(value);
+                        energyTextView.setText(String.valueOf(energy));
+                        test.setText(String.valueOf(energy));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 

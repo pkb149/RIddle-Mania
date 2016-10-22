@@ -34,6 +34,13 @@
         android:id="@+id/gamePlay"
         android:layout_below="@+id/signOut"
         android:layout_alignStart="@+id/signOut" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:id="@+id/refresh"
+        android:layout_below="@+id/gamePlay"
+        android:layout_alignStart="@+id/signOut" />
 
     <TextView
         android:layout_width="wrap_content"
