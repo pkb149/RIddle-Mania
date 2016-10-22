@@ -79,6 +79,7 @@ public class loggedInDashboard extends Activity {
         //get energy back from Async task
 
         energy = sharedPref.getInt("energy", -1);
+        Log.i("Energy: ",String.valueOf(energy));
         if(energy !=-1) {
             // energy key is already present, so we have got real energy value
             // now implement business logic
@@ -87,20 +88,18 @@ public class loggedInDashboard extends Activity {
                 // fetch time from local device
                 Date currenttime= new Date();
                 //System.currentTimeMillis();
-
                 Long timeOld= sharedPref.getLong("time",-1);
                 long totalTime = (currenttime.getTime() - timeOld)/1000;// 10000 instead of timeOld
                 Toast.makeText(getApplicationContext(),
                         "You will get 15 unit energy after :"+(3600-totalTime)/60+" mins & "+(3600-totalTime)%60+" secs"
                         ,Toast.LENGTH_LONG).show();
-
-                if(totalTime>36){
+                if(totalTime>3600){
                     //update energy 15 per hour by xaluation difference in time from server
 
                     //check server time difference
                     //if true
                    // Map l= ServerValue.TIMES
-
+                    ref.child("users").child(UID).child("Time_New").setValue(ServerValue.TIMESTAMP);
 
                     ref.child("users").child(UID).child("Time_New").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -141,17 +140,15 @@ public class loggedInDashboard extends Activity {
                                             energy = temp;
                                         }
                                     }
-                                    else
-                                    {
-                                        Toast.makeText(getApplicationContext(),"wait or buy energy", Toast.LENGTH_LONG);
-                                    }
+
                                     editor.putLong("time",System.currentTimeMillis());
                                     editor.putInt("energy",energy);
                                     editor.apply();
+                                    energyTextView.setText(String.valueOf(energy));
+                                    Log.i("Info", String.valueOf(energy));
+                                    Toast.makeText(getApplicationContext(),Integer.toString(energy), Toast.LENGTH_LONG);
                                     ref.child("users").child(UID).child("energy").setValue(energy);
-                                    //ref.child("users").child(UID).child("Time_New").setValue(ServerValue.TIMESTAMP);
                                     ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
-
                                 }
 
                                 @Override
@@ -167,21 +164,21 @@ public class loggedInDashboard extends Activity {
                         }
                     });
 
-
-                    //update remote db as well
                     }
+                else{
+                    energyTextView.setText(String.valueOf(energy));
+                }
             }
             else{
-                Long timeOld= sharedPref.getLong("time",-1);
-                long totalTime = (System.currentTimeMillis() - timeOld)/1000;// 10000 instead of timeOld
-                Toast.makeText(getApplicationContext(),"You will get 15 unit energy after :"+(3600-totalTime)/60+" mins & "+(3600-totalTime)%60+" secs" ,Toast.LENGTH_LONG).show();
+                energyTextView.setText(String.valueOf(energy));
             }
+
         }
         else {
             ref.child("users").child(UID).child("energy").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    Object value= snapshot.getValue(Object.class);
+                    final Object value= snapshot.getValue(Object.class);
 
                     if(value==null){
                         Toast.makeText(getApplicationContext(),"NULL",Toast.LENGTH_SHORT).show();
@@ -194,6 +191,7 @@ public class loggedInDashboard extends Activity {
                             ref.child("users").child(UID).child("energy").setValue(energy);
                            // ref.child("users").child(UID).child("Time_New").setValue(ServerValue.TIMESTAMP);
                             ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
+                            energyTextView.setText(String.valueOf(energy));
                         }
                     }
                     else{// if user in installing app again, but his account is already  in firebase db
@@ -211,6 +209,11 @@ public class loggedInDashboard extends Activity {
                                         long diff=(time_new-time_old)/60000;
                                         if(diff>240){
                                             energy=60;
+                                            editor.putLong("time",System.currentTimeMillis());
+                                            editor.putInt("energy",energy);
+                                            editor.apply();
+                                            ref.child("users").child(UID).child("energy").setValue(energy);
+                                            ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
                                         }
                                         else if(diff>180){
                                             int temp=energy+45;
@@ -220,6 +223,11 @@ public class loggedInDashboard extends Activity {
                                             else {
                                                 energy = temp;
                                             }
+                                            editor.putLong("time",System.currentTimeMillis());
+                                            editor.putInt("energy",energy);
+                                            editor.apply();
+                                            ref.child("users").child(UID).child("energy").setValue(energy);
+                                            ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
                                         }
                                         else if(diff>120){
                                             int temp=energy+30;
@@ -229,6 +237,11 @@ public class loggedInDashboard extends Activity {
                                             else {
                                                 energy = temp;
                                             }
+                                            editor.putLong("time",System.currentTimeMillis());
+                                            editor.putInt("energy",energy);
+                                            editor.apply();
+                                            ref.child("users").child(UID).child("energy").setValue(energy);
+                                            ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
                                         }
                                         else if(diff>60){
                                             int temp=energy+15;
@@ -238,14 +251,20 @@ public class loggedInDashboard extends Activity {
                                             else {
                                                 energy = temp;
                                             }
+                                            editor.putLong("time",System.currentTimeMillis());
+                                            editor.putInt("energy",energy);
+                                            editor.apply();
+                                            ref.child("users").child(UID).child("energy").setValue(energy);
+                                            ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
                                         }
-                                        editor.putLong("time",System.currentTimeMillis());
-                                        editor.putInt("energy",energy);
-                                        editor.apply();
-                                        ref.child("users").child(UID).child("energy").setValue(energy);
-                                        //ref.child("users").child(UID).child("Time_New").setValue(ServerValue.TIMESTAMP);
-                                        ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
-
+                                        else{
+                                            energy=(int)(long)value;
+                                            editor.putLong("time",time_old);
+                                            editor.putInt("energy",energy);
+                                            editor.apply();
+                                        }
+                                        test.setText(String.valueOf(value));
+                                        energyTextView.setText(String.valueOf(energy));
                                     }
 
                                     @Override
@@ -262,15 +281,14 @@ public class loggedInDashboard extends Activity {
                         });
                         // read the timestamp from server and update energy
                     }
-                    test.setText(String.valueOf(value));
-                    energyTextView.setText(String.valueOf(energy));
+
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
         }
-        energyTextView.setText(String.valueOf(energy));
+
         button2= (Button)findViewById(R.id.gamePlay);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,9 +296,11 @@ public class loggedInDashboard extends Activity {
                 if(energy>14) {
                     energy = energy - 15;
                     ref.child("users").child(UID).child("energy").setValue(energy);
+                    ref.child("users").child(UID).child("Time_Old").setValue(ServerValue.TIMESTAMP);
                     editor.putInt("energy", energy);
                     editor.apply();
                     energyTextView.setText(String.valueOf(energy));
+
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"energy is "+energy, Toast.LENGTH_SHORT).show();
